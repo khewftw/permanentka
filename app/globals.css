@@ -1,26 +1,210 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --mulberry: #5f0032;
+  --lavender: #eaa2e5;
+  --gallery: #efefef;
+  --tidal: #e8f9a2;
+
+  /* сетка: боковые отступы */
+  --gutter: 20px;
+  --promo-h: 26px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (min-width: 768px) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --gutter: 40px;
   }
 }
 
+@media (min-width: 1280px) {
+  :root {
+    --gutter: 80px;
+  }
+}
+
+@theme inline {
+  --color-mulberry: var(--mulberry);
+  --color-lavender: var(--lavender);
+  --color-gallery: var(--gallery);
+  --color-tidal: var(--tidal);
+  --font-sans: var(--font-roboto), Arial, Helvetica, sans-serif;
+  --font-heading: var(--font-tenor), Georgia, serif;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--gallery);
+  color: var(--mulberry);
+  font-family: var(--font-roboto), Arial, Helvetica, sans-serif;
+}
+
+.container-grid {
+  width: 100%;
+  padding-inline: var(--gutter);
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* Галерея работ: бегущие строки */
+.gallery-viewport {
+  overflow: hidden;
+}
+
+.gallery-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--dur, 60s) linear infinite;
+}
+
+.gallery-track[data-dir="right"] {
+  animation-direction: reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-viewport {
+    overflow-x: auto;
+  }
+  .gallery-track {
+    animation: none;
+  }
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== Анимации ===== */
+:root {
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Появление при прокрутке (компонент Reveal) */
+.reveal {
+  transition:
+    opacity 0.9s var(--ease),
+    translate 0.9s var(--ease);
+}
+.reveal[data-state="hidden"] {
+  opacity: 0;
+  translate: 0 36px;
+}
+
+/* Появление при загрузке (hero, хедер) */
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 28px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes hero-zoom {
+  from {
+    scale: 1.12;
+  }
+  to {
+    scale: 1;
+  }
+}
+.rise {
+  animation: rise 1s var(--ease) both;
+  animation-delay: var(--d, 0s);
+}
+.fade-in {
+  animation: fade-in 1s ease both;
+  animation-delay: var(--d, 0s);
+}
+.hero-zoom {
+  animation: hero-zoom 2.4s var(--ease) both;
+}
+
+/* Кнопки: лёгкий подъём и тень */
+.btn-lift {
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    border-color 0.3s,
+    translate 0.3s var(--ease),
+    box-shadow 0.3s;
+}
+.btn-lift:hover {
+  translate: 0 -3px;
+  box-shadow: 0 14px 30px -14px rgb(0 0 0 / 0.45);
+}
+.btn-lift:active {
+  translate: 0 0;
+  box-shadow: none;
+}
+
+/* Ссылки: подчёркивание «выезжает» слева направо */
+.link-underline {
+  background: linear-gradient(currentColor, currentColor) left bottom / 0 1px no-repeat;
+  padding-bottom: 3px;
+  transition: background-size 0.4s var(--ease);
+}
+.link-underline:hover,
+.link-underline:focus-visible {
+  background-size: 100% 1px;
+}
+
+/* Иконки: плавное увеличение */
+.icon-hover {
+  transition:
+    scale 0.3s var(--ease),
+    opacity 0.3s;
+}
+.icon-hover:hover {
+  scale: 1.12;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition: none;
+  }
+  .reveal[data-state="hidden"] {
+    opacity: 1;
+    translate: none;
+  }
+  .rise,
+  .fade-in,
+  .hero-zoom {
+    animation: none;
+  }
+  .btn-lift:hover,
+  .icon-hover:hover {
+    translate: none;
+    scale: none;
+  }
 }
